@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://img.chemie.de/Portal/News/65cc7eb8336a1_Q3j_WKWvT.png?tr=w-1200,h-600,cm-extract,x-0,y-149:n-news_teaser');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            color: rgb(6, 5, 5);
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(to bottom, #eeeaea8c, rgba(250, 250, 250, 0.9));
+        }
+        h1 {
+            font-size: 3em;
+            margin: 20px;
+        }
+        p {
+            font-size: 2em;
+            margin: 0px;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 3px solid rgb(0, 0, 0);
+            padding: 10px;
+        }
+        th {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .low-risk {
+            color: green;
+            font-weight: bold;
+        }
+        .high-risk {
+            color: red;
+            font-weight: bold;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: rgb(110, 110, 110);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Result</h1>
+        <div class="overall-result">
+            {% if overall_prediction_proba >= 50 %}
+                <p class="high-risk">Overall: {{ overall_prediction_proba }}% chance that you have heart disease</p>
+            {% else %}
+                <p class="low-risk">Overall: {{ overall_prediction_proba }}% chance that you have heart disease</p>
+            {% endif %}
+        </div>
+        <h2>
+            Detailed Models Predictions
+        </h2>
+        <table>
+            <tr>
+                <th>Model</th>
+                <th>Prediction</th>
+                <th>Probability (%)</th>
+            </tr>
+            {% for model, details in model_predictions.items() %}
+            <tr>
+                <td>{{ model }}</td>
+                <td class="{{ 'high-risk' if details.prediction_proba >= 50 else 'low-risk' }}">
+                    {{ details.prediction_label }}
+                </td>
+                <td>{{ "%.2f"|format(details.prediction_proba) }}%</td>
+            </tr>
+            {% endfor %}
